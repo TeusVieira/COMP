@@ -1,0 +1,1080 @@
+Terminals unused in grammar
+
+    OP_IGUAL
+    OP_DIFERENTE
+    OP_MAIORIGUAL
+    OP_MENORIGUAL
+    OP_MAIOR
+    OP_MENOR
+
+
+State 79 conflicts: 9 shift/reduce
+State 80 conflicts: 8 shift/reduce
+State 89 conflicts: 8 shift/reduce
+
+
+Grammar
+
+    0 $accept: programa $end
+
+    1 programa: INICIO bloco FIM
+
+    2 bloco: bloco linha
+    3      | linha
+
+    4 linha: declaracao
+    5      | comando
+
+    6 declaracao: KW_INT ID ';'
+    7           | KW_FLOAT ID ';'
+    8           | KW_STRING ID ';'
+    9           | KW_INT ID '[' INT_CONST ']' ';'
+   10           | KW_FLOAT ID '[' INT_CONST ']' ';'
+   11           | KW_STRING ID '[' INT_CONST ']' ';'
+
+   12 comando: RECEBA ID ';'
+   13        | RECEBA ID '[' INT_CONST ']' ';'
+   14        | DEVOLVA lista_de_impressao ';'
+   15        | ID OP_ATRIBUICAO expressao ';'
+   16        | ID '[' INT_CONST ']' OP_ATRIBUICAO expressao ';'
+   17        | condicional
+   18        | repeticao
+
+   19 lista_de_impressao: item_impressao
+   20                   | lista_de_impressao ',' item_impressao
+
+   21 item_impressao: STRING
+   22               | ID
+   23               | ID '[' expressao ']'
+
+   24 condicional: KW_IF '(' expressao ')' bloco
+   25            | KW_IF '(' expressao ')' bloco KW_ELSE bloco
+
+   26 repeticao: KW_WHILE '(' expressao ')' bloco
+
+   27 expressao: expressao '+' expressao
+   28          | expressao '-' expressao
+   29          | expressao '*' expressao
+   30          | expressao '/' expressao
+   31          | '(' expressao ')'
+   32          | INT_CONST
+   33          | FLOAT_CONST
+   34          | ID
+   35          | ID '[' expressao ']'
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '(' (40) 24 25 26 31
+    ')' (41) 24 25 26 31
+    '*' (42) 29
+    '+' (43) 27
+    ',' (44) 20
+    '-' (45) 28
+    '/' (47) 30
+    ';' (59) 6 7 8 9 10 11 12 13 14 15 16
+    '[' (91) 9 10 11 13 16 23 35
+    ']' (93) 9 10 11 13 16 23 35
+    error (256)
+    INT_CONST <ival> (258) 9 10 11 13 16 32
+    FLOAT_CONST <fval> (259) 33
+    ID <sval> (260) 6 7 8 9 10 11 12 13 15 16 22 23 34 35
+    STRING <sval> (261) 21
+    INICIO (262) 1
+    FIM (263) 1
+    KW_INT (264) 6 9
+    KW_FLOAT (265) 7 10
+    KW_STRING (266) 8 11
+    RECEBA (267) 12 13
+    DEVOLVA (268) 14
+    KW_IF (269) 24 25
+    KW_ELSE (270) 25
+    KW_WHILE (271) 26
+    OP_IGUAL (272)
+    OP_DIFERENTE (273)
+    OP_MAIORIGUAL (274)
+    OP_MENORIGUAL (275)
+    OP_MAIOR (276)
+    OP_MENOR (277)
+    OP_ATRIBUICAO (278) 15 16
+
+
+Nonterminals, with rules where they appear
+
+    $accept (34)
+        on left: 0
+    programa (35)
+        on left: 1
+        on right: 0
+    bloco (36)
+        on left: 2 3
+        on right: 1 2 24 25 26
+    linha (37)
+        on left: 4 5
+        on right: 2 3
+    declaracao (38)
+        on left: 6 7 8 9 10 11
+        on right: 4
+    comando (39)
+        on left: 12 13 14 15 16 17 18
+        on right: 5
+    lista_de_impressao <sval> (40)
+        on left: 19 20
+        on right: 14 20
+    item_impressao <sval> (41)
+        on left: 21 22 23
+        on right: 19 20
+    condicional (42)
+        on left: 24 25
+        on right: 17
+    repeticao (43)
+        on left: 26
+        on right: 18
+    expressao <ival> (44)
+        on left: 27 28 29 30 31 32 33 34 35
+        on right: 15 16 23 24 25 26 27 28 29 30 31 35
+
+
+State 0
+
+    0 $accept: . programa $end
+
+    INICIO  shift, and go to state 1
+
+    programa  go to state 2
+
+
+State 1
+
+    1 programa: INICIO . bloco FIM
+
+    ID         shift, and go to state 3
+    KW_INT     shift, and go to state 4
+    KW_FLOAT   shift, and go to state 5
+    KW_STRING  shift, and go to state 6
+    RECEBA     shift, and go to state 7
+    DEVOLVA    shift, and go to state 8
+    KW_IF      shift, and go to state 9
+    KW_WHILE   shift, and go to state 10
+
+    bloco        go to state 11
+    linha        go to state 12
+    declaracao   go to state 13
+    comando      go to state 14
+    condicional  go to state 15
+    repeticao    go to state 16
+
+
+State 2
+
+    0 $accept: programa . $end
+
+    $end  shift, and go to state 17
+
+
+State 3
+
+   15 comando: ID . OP_ATRIBUICAO expressao ';'
+   16        | ID . '[' INT_CONST ']' OP_ATRIBUICAO expressao ';'
+
+    OP_ATRIBUICAO  shift, and go to state 18
+    '['            shift, and go to state 19
+
+
+State 4
+
+    6 declaracao: KW_INT . ID ';'
+    9           | KW_INT . ID '[' INT_CONST ']' ';'
+
+    ID  shift, and go to state 20
+
+
+State 5
+
+    7 declaracao: KW_FLOAT . ID ';'
+   10           | KW_FLOAT . ID '[' INT_CONST ']' ';'
+
+    ID  shift, and go to state 21
+
+
+State 6
+
+    8 declaracao: KW_STRING . ID ';'
+   11           | KW_STRING . ID '[' INT_CONST ']' ';'
+
+    ID  shift, and go to state 22
+
+
+State 7
+
+   12 comando: RECEBA . ID ';'
+   13        | RECEBA . ID '[' INT_CONST ']' ';'
+
+    ID  shift, and go to state 23
+
+
+State 8
+
+   14 comando: DEVOLVA . lista_de_impressao ';'
+
+    ID      shift, and go to state 24
+    STRING  shift, and go to state 25
+
+    lista_de_impressao  go to state 26
+    item_impressao      go to state 27
+
+
+State 9
+
+   24 condicional: KW_IF . '(' expressao ')' bloco
+   25            | KW_IF . '(' expressao ')' bloco KW_ELSE bloco
+
+    '('  shift, and go to state 28
+
+
+State 10
+
+   26 repeticao: KW_WHILE . '(' expressao ')' bloco
+
+    '('  shift, and go to state 29
+
+
+State 11
+
+    1 programa: INICIO bloco . FIM
+    2 bloco: bloco . linha
+
+    ID         shift, and go to state 3
+    FIM        shift, and go to state 30
+    KW_INT     shift, and go to state 4
+    KW_FLOAT   shift, and go to state 5
+    KW_STRING  shift, and go to state 6
+    RECEBA     shift, and go to state 7
+    DEVOLVA    shift, and go to state 8
+    KW_IF      shift, and go to state 9
+    KW_WHILE   shift, and go to state 10
+
+    linha        go to state 31
+    declaracao   go to state 13
+    comando      go to state 14
+    condicional  go to state 15
+    repeticao    go to state 16
+
+
+State 12
+
+    3 bloco: linha .
+
+    $default  reduce using rule 3 (bloco)
+
+
+State 13
+
+    4 linha: declaracao .
+
+    $default  reduce using rule 4 (linha)
+
+
+State 14
+
+    5 linha: comando .
+
+    $default  reduce using rule 5 (linha)
+
+
+State 15
+
+   17 comando: condicional .
+
+    $default  reduce using rule 17 (comando)
+
+
+State 16
+
+   18 comando: repeticao .
+
+    $default  reduce using rule 18 (comando)
+
+
+State 17
+
+    0 $accept: programa $end .
+
+    $default  accept
+
+
+State 18
+
+   15 comando: ID OP_ATRIBUICAO . expressao ';'
+
+    INT_CONST    shift, and go to state 32
+    FLOAT_CONST  shift, and go to state 33
+    ID           shift, and go to state 34
+    '('          shift, and go to state 35
+
+    expressao  go to state 36
+
+
+State 19
+
+   16 comando: ID '[' . INT_CONST ']' OP_ATRIBUICAO expressao ';'
+
+    INT_CONST  shift, and go to state 37
+
+
+State 20
+
+    6 declaracao: KW_INT ID . ';'
+    9           | KW_INT ID . '[' INT_CONST ']' ';'
+
+    ';'  shift, and go to state 38
+    '['  shift, and go to state 39
+
+
+State 21
+
+    7 declaracao: KW_FLOAT ID . ';'
+   10           | KW_FLOAT ID . '[' INT_CONST ']' ';'
+
+    ';'  shift, and go to state 40
+    '['  shift, and go to state 41
+
+
+State 22
+
+    8 declaracao: KW_STRING ID . ';'
+   11           | KW_STRING ID . '[' INT_CONST ']' ';'
+
+    ';'  shift, and go to state 42
+    '['  shift, and go to state 43
+
+
+State 23
+
+   12 comando: RECEBA ID . ';'
+   13        | RECEBA ID . '[' INT_CONST ']' ';'
+
+    ';'  shift, and go to state 44
+    '['  shift, and go to state 45
+
+
+State 24
+
+   22 item_impressao: ID .
+   23               | ID . '[' expressao ']'
+
+    '['  shift, and go to state 46
+
+    $default  reduce using rule 22 (item_impressao)
+
+
+State 25
+
+   21 item_impressao: STRING .
+
+    $default  reduce using rule 21 (item_impressao)
+
+
+State 26
+
+   14 comando: DEVOLVA lista_de_impressao . ';'
+   20 lista_de_impressao: lista_de_impressao . ',' item_impressao
+
+    ';'  shift, and go to state 47
+    ','  shift, and go to state 48
+
+
+State 27
+
+   19 lista_de_impressao: item_impressao .
+
+    $default  reduce using rule 19 (lista_de_impressao)
+
+
+State 28
+
+   24 condicional: KW_IF '(' . expressao ')' bloco
+   25            | KW_IF '(' . expressao ')' bloco KW_ELSE bloco
+
+    INT_CONST    shift, and go to state 32
+    FLOAT_CONST  shift, and go to state 33
+    ID           shift, and go to state 34
+    '('          shift, and go to state 35
+
+    expressao  go to state 49
+
+
+State 29
+
+   26 repeticao: KW_WHILE '(' . expressao ')' bloco
+
+    INT_CONST    shift, and go to state 32
+    FLOAT_CONST  shift, and go to state 33
+    ID           shift, and go to state 34
+    '('          shift, and go to state 35
+
+    expressao  go to state 50
+
+
+State 30
+
+    1 programa: INICIO bloco FIM .
+
+    $default  reduce using rule 1 (programa)
+
+
+State 31
+
+    2 bloco: bloco linha .
+
+    $default  reduce using rule 2 (bloco)
+
+
+State 32
+
+   32 expressao: INT_CONST .
+
+    $default  reduce using rule 32 (expressao)
+
+
+State 33
+
+   33 expressao: FLOAT_CONST .
+
+    $default  reduce using rule 33 (expressao)
+
+
+State 34
+
+   34 expressao: ID .
+   35          | ID . '[' expressao ']'
+
+    '['  shift, and go to state 51
+
+    $default  reduce using rule 34 (expressao)
+
+
+State 35
+
+   31 expressao: '(' . expressao ')'
+
+    INT_CONST    shift, and go to state 32
+    FLOAT_CONST  shift, and go to state 33
+    ID           shift, and go to state 34
+    '('          shift, and go to state 35
+
+    expressao  go to state 52
+
+
+State 36
+
+   15 comando: ID OP_ATRIBUICAO expressao . ';'
+   27 expressao: expressao . '+' expressao
+   28          | expressao . '-' expressao
+   29          | expressao . '*' expressao
+   30          | expressao . '/' expressao
+
+    '+'  shift, and go to state 53
+    '-'  shift, and go to state 54
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+    ';'  shift, and go to state 57
+
+
+State 37
+
+   16 comando: ID '[' INT_CONST . ']' OP_ATRIBUICAO expressao ';'
+
+    ']'  shift, and go to state 58
+
+
+State 38
+
+    6 declaracao: KW_INT ID ';' .
+
+    $default  reduce using rule 6 (declaracao)
+
+
+State 39
+
+    9 declaracao: KW_INT ID '[' . INT_CONST ']' ';'
+
+    INT_CONST  shift, and go to state 59
+
+
+State 40
+
+    7 declaracao: KW_FLOAT ID ';' .
+
+    $default  reduce using rule 7 (declaracao)
+
+
+State 41
+
+   10 declaracao: KW_FLOAT ID '[' . INT_CONST ']' ';'
+
+    INT_CONST  shift, and go to state 60
+
+
+State 42
+
+    8 declaracao: KW_STRING ID ';' .
+
+    $default  reduce using rule 8 (declaracao)
+
+
+State 43
+
+   11 declaracao: KW_STRING ID '[' . INT_CONST ']' ';'
+
+    INT_CONST  shift, and go to state 61
+
+
+State 44
+
+   12 comando: RECEBA ID ';' .
+
+    $default  reduce using rule 12 (comando)
+
+
+State 45
+
+   13 comando: RECEBA ID '[' . INT_CONST ']' ';'
+
+    INT_CONST  shift, and go to state 62
+
+
+State 46
+
+   23 item_impressao: ID '[' . expressao ']'
+
+    INT_CONST    shift, and go to state 32
+    FLOAT_CONST  shift, and go to state 33
+    ID           shift, and go to state 34
+    '('          shift, and go to state 35
+
+    expressao  go to state 63
+
+
+State 47
+
+   14 comando: DEVOLVA lista_de_impressao ';' .
+
+    $default  reduce using rule 14 (comando)
+
+
+State 48
+
+   20 lista_de_impressao: lista_de_impressao ',' . item_impressao
+
+    ID      shift, and go to state 24
+    STRING  shift, and go to state 25
+
+    item_impressao  go to state 64
+
+
+State 49
+
+   24 condicional: KW_IF '(' expressao . ')' bloco
+   25            | KW_IF '(' expressao . ')' bloco KW_ELSE bloco
+   27 expressao: expressao . '+' expressao
+   28          | expressao . '-' expressao
+   29          | expressao . '*' expressao
+   30          | expressao . '/' expressao
+
+    '+'  shift, and go to state 53
+    '-'  shift, and go to state 54
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+    ')'  shift, and go to state 65
+
+
+State 50
+
+   26 repeticao: KW_WHILE '(' expressao . ')' bloco
+   27 expressao: expressao . '+' expressao
+   28          | expressao . '-' expressao
+   29          | expressao . '*' expressao
+   30          | expressao . '/' expressao
+
+    '+'  shift, and go to state 53
+    '-'  shift, and go to state 54
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+    ')'  shift, and go to state 66
+
+
+State 51
+
+   35 expressao: ID '[' . expressao ']'
+
+    INT_CONST    shift, and go to state 32
+    FLOAT_CONST  shift, and go to state 33
+    ID           shift, and go to state 34
+    '('          shift, and go to state 35
+
+    expressao  go to state 67
+
+
+State 52
+
+   27 expressao: expressao . '+' expressao
+   28          | expressao . '-' expressao
+   29          | expressao . '*' expressao
+   30          | expressao . '/' expressao
+   31          | '(' expressao . ')'
+
+    '+'  shift, and go to state 53
+    '-'  shift, and go to state 54
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+    ')'  shift, and go to state 68
+
+
+State 53
+
+   27 expressao: expressao '+' . expressao
+
+    INT_CONST    shift, and go to state 32
+    FLOAT_CONST  shift, and go to state 33
+    ID           shift, and go to state 34
+    '('          shift, and go to state 35
+
+    expressao  go to state 69
+
+
+State 54
+
+   28 expressao: expressao '-' . expressao
+
+    INT_CONST    shift, and go to state 32
+    FLOAT_CONST  shift, and go to state 33
+    ID           shift, and go to state 34
+    '('          shift, and go to state 35
+
+    expressao  go to state 70
+
+
+State 55
+
+   29 expressao: expressao '*' . expressao
+
+    INT_CONST    shift, and go to state 32
+    FLOAT_CONST  shift, and go to state 33
+    ID           shift, and go to state 34
+    '('          shift, and go to state 35
+
+    expressao  go to state 71
+
+
+State 56
+
+   30 expressao: expressao '/' . expressao
+
+    INT_CONST    shift, and go to state 32
+    FLOAT_CONST  shift, and go to state 33
+    ID           shift, and go to state 34
+    '('          shift, and go to state 35
+
+    expressao  go to state 72
+
+
+State 57
+
+   15 comando: ID OP_ATRIBUICAO expressao ';' .
+
+    $default  reduce using rule 15 (comando)
+
+
+State 58
+
+   16 comando: ID '[' INT_CONST ']' . OP_ATRIBUICAO expressao ';'
+
+    OP_ATRIBUICAO  shift, and go to state 73
+
+
+State 59
+
+    9 declaracao: KW_INT ID '[' INT_CONST . ']' ';'
+
+    ']'  shift, and go to state 74
+
+
+State 60
+
+   10 declaracao: KW_FLOAT ID '[' INT_CONST . ']' ';'
+
+    ']'  shift, and go to state 75
+
+
+State 61
+
+   11 declaracao: KW_STRING ID '[' INT_CONST . ']' ';'
+
+    ']'  shift, and go to state 76
+
+
+State 62
+
+   13 comando: RECEBA ID '[' INT_CONST . ']' ';'
+
+    ']'  shift, and go to state 77
+
+
+State 63
+
+   23 item_impressao: ID '[' expressao . ']'
+   27 expressao: expressao . '+' expressao
+   28          | expressao . '-' expressao
+   29          | expressao . '*' expressao
+   30          | expressao . '/' expressao
+
+    '+'  shift, and go to state 53
+    '-'  shift, and go to state 54
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+    ']'  shift, and go to state 78
+
+
+State 64
+
+   20 lista_de_impressao: lista_de_impressao ',' item_impressao .
+
+    $default  reduce using rule 20 (lista_de_impressao)
+
+
+State 65
+
+   24 condicional: KW_IF '(' expressao ')' . bloco
+   25            | KW_IF '(' expressao ')' . bloco KW_ELSE bloco
+
+    ID         shift, and go to state 3
+    KW_INT     shift, and go to state 4
+    KW_FLOAT   shift, and go to state 5
+    KW_STRING  shift, and go to state 6
+    RECEBA     shift, and go to state 7
+    DEVOLVA    shift, and go to state 8
+    KW_IF      shift, and go to state 9
+    KW_WHILE   shift, and go to state 10
+
+    bloco        go to state 79
+    linha        go to state 12
+    declaracao   go to state 13
+    comando      go to state 14
+    condicional  go to state 15
+    repeticao    go to state 16
+
+
+State 66
+
+   26 repeticao: KW_WHILE '(' expressao ')' . bloco
+
+    ID         shift, and go to state 3
+    KW_INT     shift, and go to state 4
+    KW_FLOAT   shift, and go to state 5
+    KW_STRING  shift, and go to state 6
+    RECEBA     shift, and go to state 7
+    DEVOLVA    shift, and go to state 8
+    KW_IF      shift, and go to state 9
+    KW_WHILE   shift, and go to state 10
+
+    bloco        go to state 80
+    linha        go to state 12
+    declaracao   go to state 13
+    comando      go to state 14
+    condicional  go to state 15
+    repeticao    go to state 16
+
+
+State 67
+
+   27 expressao: expressao . '+' expressao
+   28          | expressao . '-' expressao
+   29          | expressao . '*' expressao
+   30          | expressao . '/' expressao
+   35          | ID '[' expressao . ']'
+
+    '+'  shift, and go to state 53
+    '-'  shift, and go to state 54
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+    ']'  shift, and go to state 81
+
+
+State 68
+
+   31 expressao: '(' expressao ')' .
+
+    $default  reduce using rule 31 (expressao)
+
+
+State 69
+
+   27 expressao: expressao . '+' expressao
+   27          | expressao '+' expressao .
+   28          | expressao . '-' expressao
+   29          | expressao . '*' expressao
+   30          | expressao . '/' expressao
+
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+
+    $default  reduce using rule 27 (expressao)
+
+
+State 70
+
+   27 expressao: expressao . '+' expressao
+   28          | expressao . '-' expressao
+   28          | expressao '-' expressao .
+   29          | expressao . '*' expressao
+   30          | expressao . '/' expressao
+
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+
+    $default  reduce using rule 28 (expressao)
+
+
+State 71
+
+   27 expressao: expressao . '+' expressao
+   28          | expressao . '-' expressao
+   29          | expressao . '*' expressao
+   29          | expressao '*' expressao .
+   30          | expressao . '/' expressao
+
+    $default  reduce using rule 29 (expressao)
+
+
+State 72
+
+   27 expressao: expressao . '+' expressao
+   28          | expressao . '-' expressao
+   29          | expressao . '*' expressao
+   30          | expressao . '/' expressao
+   30          | expressao '/' expressao .
+
+    $default  reduce using rule 30 (expressao)
+
+
+State 73
+
+   16 comando: ID '[' INT_CONST ']' OP_ATRIBUICAO . expressao ';'
+
+    INT_CONST    shift, and go to state 32
+    FLOAT_CONST  shift, and go to state 33
+    ID           shift, and go to state 34
+    '('          shift, and go to state 35
+
+    expressao  go to state 82
+
+
+State 74
+
+    9 declaracao: KW_INT ID '[' INT_CONST ']' . ';'
+
+    ';'  shift, and go to state 83
+
+
+State 75
+
+   10 declaracao: KW_FLOAT ID '[' INT_CONST ']' . ';'
+
+    ';'  shift, and go to state 84
+
+
+State 76
+
+   11 declaracao: KW_STRING ID '[' INT_CONST ']' . ';'
+
+    ';'  shift, and go to state 85
+
+
+State 77
+
+   13 comando: RECEBA ID '[' INT_CONST ']' . ';'
+
+    ';'  shift, and go to state 86
+
+
+State 78
+
+   23 item_impressao: ID '[' expressao ']' .
+
+    $default  reduce using rule 23 (item_impressao)
+
+
+State 79
+
+    2 bloco: bloco . linha
+   24 condicional: KW_IF '(' expressao ')' bloco .
+   25            | KW_IF '(' expressao ')' bloco . KW_ELSE bloco
+
+    ID         shift, and go to state 3
+    KW_INT     shift, and go to state 4
+    KW_FLOAT   shift, and go to state 5
+    KW_STRING  shift, and go to state 6
+    RECEBA     shift, and go to state 7
+    DEVOLVA    shift, and go to state 8
+    KW_IF      shift, and go to state 9
+    KW_ELSE    shift, and go to state 87
+    KW_WHILE   shift, and go to state 10
+
+    ID         [reduce using rule 24 (condicional)]
+    KW_INT     [reduce using rule 24 (condicional)]
+    KW_FLOAT   [reduce using rule 24 (condicional)]
+    KW_STRING  [reduce using rule 24 (condicional)]
+    RECEBA     [reduce using rule 24 (condicional)]
+    DEVOLVA    [reduce using rule 24 (condicional)]
+    KW_IF      [reduce using rule 24 (condicional)]
+    KW_ELSE    [reduce using rule 24 (condicional)]
+    KW_WHILE   [reduce using rule 24 (condicional)]
+    $default   reduce using rule 24 (condicional)
+
+    linha        go to state 31
+    declaracao   go to state 13
+    comando      go to state 14
+    condicional  go to state 15
+    repeticao    go to state 16
+
+
+State 80
+
+    2 bloco: bloco . linha
+   26 repeticao: KW_WHILE '(' expressao ')' bloco .
+
+    ID         shift, and go to state 3
+    KW_INT     shift, and go to state 4
+    KW_FLOAT   shift, and go to state 5
+    KW_STRING  shift, and go to state 6
+    RECEBA     shift, and go to state 7
+    DEVOLVA    shift, and go to state 8
+    KW_IF      shift, and go to state 9
+    KW_WHILE   shift, and go to state 10
+
+    ID         [reduce using rule 26 (repeticao)]
+    KW_INT     [reduce using rule 26 (repeticao)]
+    KW_FLOAT   [reduce using rule 26 (repeticao)]
+    KW_STRING  [reduce using rule 26 (repeticao)]
+    RECEBA     [reduce using rule 26 (repeticao)]
+    DEVOLVA    [reduce using rule 26 (repeticao)]
+    KW_IF      [reduce using rule 26 (repeticao)]
+    KW_WHILE   [reduce using rule 26 (repeticao)]
+    $default   reduce using rule 26 (repeticao)
+
+    linha        go to state 31
+    declaracao   go to state 13
+    comando      go to state 14
+    condicional  go to state 15
+    repeticao    go to state 16
+
+
+State 81
+
+   35 expressao: ID '[' expressao ']' .
+
+    $default  reduce using rule 35 (expressao)
+
+
+State 82
+
+   16 comando: ID '[' INT_CONST ']' OP_ATRIBUICAO expressao . ';'
+   27 expressao: expressao . '+' expressao
+   28          | expressao . '-' expressao
+   29          | expressao . '*' expressao
+   30          | expressao . '/' expressao
+
+    '+'  shift, and go to state 53
+    '-'  shift, and go to state 54
+    '*'  shift, and go to state 55
+    '/'  shift, and go to state 56
+    ';'  shift, and go to state 88
+
+
+State 83
+
+    9 declaracao: KW_INT ID '[' INT_CONST ']' ';' .
+
+    $default  reduce using rule 9 (declaracao)
+
+
+State 84
+
+   10 declaracao: KW_FLOAT ID '[' INT_CONST ']' ';' .
+
+    $default  reduce using rule 10 (declaracao)
+
+
+State 85
+
+   11 declaracao: KW_STRING ID '[' INT_CONST ']' ';' .
+
+    $default  reduce using rule 11 (declaracao)
+
+
+State 86
+
+   13 comando: RECEBA ID '[' INT_CONST ']' ';' .
+
+    $default  reduce using rule 13 (comando)
+
+
+State 87
+
+   25 condicional: KW_IF '(' expressao ')' bloco KW_ELSE . bloco
+
+    ID         shift, and go to state 3
+    KW_INT     shift, and go to state 4
+    KW_FLOAT   shift, and go to state 5
+    KW_STRING  shift, and go to state 6
+    RECEBA     shift, and go to state 7
+    DEVOLVA    shift, and go to state 8
+    KW_IF      shift, and go to state 9
+    KW_WHILE   shift, and go to state 10
+
+    bloco        go to state 89
+    linha        go to state 12
+    declaracao   go to state 13
+    comando      go to state 14
+    condicional  go to state 15
+    repeticao    go to state 16
+
+
+State 88
+
+   16 comando: ID '[' INT_CONST ']' OP_ATRIBUICAO expressao ';' .
+
+    $default  reduce using rule 16 (comando)
+
+
+State 89
+
+    2 bloco: bloco . linha
+   25 condicional: KW_IF '(' expressao ')' bloco KW_ELSE bloco .
+
+    ID         shift, and go to state 3
+    KW_INT     shift, and go to state 4
+    KW_FLOAT   shift, and go to state 5
+    KW_STRING  shift, and go to state 6
+    RECEBA     shift, and go to state 7
+    DEVOLVA    shift, and go to state 8
+    KW_IF      shift, and go to state 9
+    KW_WHILE   shift, and go to state 10
+
+    ID         [reduce using rule 25 (condicional)]
+    KW_INT     [reduce using rule 25 (condicional)]
+    KW_FLOAT   [reduce using rule 25 (condicional)]
+    KW_STRING  [reduce using rule 25 (condicional)]
+    RECEBA     [reduce using rule 25 (condicional)]
+    DEVOLVA    [reduce using rule 25 (condicional)]
+    KW_IF      [reduce using rule 25 (condicional)]
+    KW_WHILE   [reduce using rule 25 (condicional)]
+    $default   reduce using rule 25 (condicional)
+
+    linha        go to state 31
+    declaracao   go to state 13
+    comando      go to state 14
+    condicional  go to state 15
+    repeticao    go to state 16
