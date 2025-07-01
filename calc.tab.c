@@ -554,7 +554,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  11
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  42
+#define YYNRULES  43
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  102
 
@@ -607,9 +607,9 @@ static const yytype_int16 yyrline[] =
 {
        0,   111,   111,   115,   116,   120,   121,   125,   126,   127,
      128,   129,   130,   134,   152,   175,   176,   185,   199,   200,
-     204,   205,   209,   210,   215,   237,   238,   242,   246,   247,
-     248,   249,   257,   258,   259,   260,   270,   285,   286,   287,
-     288,   289,   290
+     204,   205,   209,   210,   215,   237,   238,   239,   249,   258,
+     259,   260,   261,   269,   270,   271,   272,   282,   297,   298,
+     299,   300,   301,   302
 };
 #endif
 
@@ -676,13 +676,13 @@ static const yytype_int8 yydefact[] =
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     4,     5,     6,    18,    19,     1,     0,     0,
        0,     0,     0,     0,    23,    22,     0,    20,     0,     0,
-       2,     3,    33,    34,    35,     0,     0,     0,     7,     0,
+       2,     3,    34,    35,    36,     0,     0,     0,     7,     0,
        8,     0,     9,     0,    13,     0,     0,    15,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,    16,     0,     0,     0,     0,     0,     0,
-      21,     0,     0,     0,    32,    37,    38,    41,    42,    39,
-      40,    28,    29,    30,    31,     0,     0,     0,     0,     0,
-      24,    25,    27,    36,     0,    10,    11,    12,    14,     0,
+      21,     0,     0,     0,    33,    38,    39,    42,    43,    40,
+      41,    29,    30,    31,    32,     0,     0,     0,     0,     0,
+      24,    25,    28,    37,     0,    10,    11,    12,    14,     0,
       17,    26
 };
 
@@ -771,9 +771,9 @@ static const yytype_int8 yyr1[] =
 {
        0,    34,    35,    36,    36,    37,    37,    38,    38,    38,
       38,    38,    38,    39,    39,    39,    39,    39,    39,    39,
-      40,    40,    41,    41,    41,    42,    42,    43,    44,    44,
+      40,    40,    41,    41,    41,    42,    42,    42,    43,    44,
       44,    44,    44,    44,    44,    44,    44,    44,    44,    44,
-      44,    44,    44
+      44,    44,    44,    44
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -781,9 +781,9 @@ static const yytype_int8 yyr2[] =
 {
        0,     2,     3,     2,     1,     1,     1,     3,     3,     3,
        6,     6,     6,     3,     6,     3,     4,     7,     1,     1,
-       1,     3,     1,     1,     4,     5,     7,     5,     3,     3,
-       3,     3,     3,     1,     1,     1,     4,     3,     3,     3,
-       3,     3,     3
+       1,     3,     1,     1,     4,     5,     7,     7,     5,     3,
+       3,     3,     3,     3,     1,     1,     1,     4,     3,     3,
+       3,     3,     3,     3
 };
 
 
@@ -1656,26 +1656,49 @@ yyreduce:
 #line 1657 "calc.tab.c"
     break;
 
-  case 28:
-#line 246 "calc.y"
-                              { (yyval.ival) = (yyvsp[-2].ival) + (yyvsp[0].ival); }
-#line 1663 "calc.tab.c"
-    break;
-
-  case 29:
-#line 247 "calc.y"
-                              { (yyval.ival) = (yyvsp[-2].ival) - (yyvsp[0].ival); }
+  case 27:
+#line 239 "calc.y"
+                                                {
+        if ((yyvsp[-4].ival)) {
+            // Executa o primeiro bloco
+        } else {
+            // Executa o bloco do else
+        }
+    }
 #line 1669 "calc.tab.c"
     break;
 
+  case 28:
+#line 249 "calc.y"
+                                     {
+        while ((yyvsp[-2].ival)) {
+
+            fprintf(stderr, "Erro: estrutura de repetição while ainda não suporta execução do bloco repetidamente.\n");
+        }
+    }
+#line 1680 "calc.tab.c"
+    break;
+
+  case 29:
+#line 258 "calc.y"
+                              { (yyval.ival) = (yyvsp[-2].ival) + (yyvsp[0].ival); }
+#line 1686 "calc.tab.c"
+    break;
+
   case 30:
-#line 248 "calc.y"
-                              { (yyval.ival) = (yyvsp[-2].ival) * (yyvsp[0].ival); }
-#line 1675 "calc.tab.c"
+#line 259 "calc.y"
+                              { (yyval.ival) = (yyvsp[-2].ival) - (yyvsp[0].ival); }
+#line 1692 "calc.tab.c"
     break;
 
   case 31:
-#line 249 "calc.y"
+#line 260 "calc.y"
+                              { (yyval.ival) = (yyvsp[-2].ival) * (yyvsp[0].ival); }
+#line 1698 "calc.tab.c"
+    break;
+
+  case 32:
+#line 261 "calc.y"
                               { 
         if ((yyvsp[0].ival) == 0) {
             yyerror("Divisão por zero");
@@ -1684,29 +1707,29 @@ yyreduce:
             (yyval.ival) = (yyvsp[-2].ival) / (yyvsp[0].ival);
         }
       }
-#line 1688 "calc.tab.c"
-    break;
-
-  case 32:
-#line 257 "calc.y"
-                        { (yyval.ival) = (yyvsp[-1].ival); }
-#line 1694 "calc.tab.c"
+#line 1711 "calc.tab.c"
     break;
 
   case 33:
-#line 258 "calc.y"
-                { (yyval.ival) = (yyvsp[0].ival); }
-#line 1700 "calc.tab.c"
+#line 269 "calc.y"
+                        { (yyval.ival) = (yyvsp[-1].ival); }
+#line 1717 "calc.tab.c"
     break;
 
   case 34:
-#line 259 "calc.y"
-                  { (yyval.ival) = (int)(yyvsp[0].fval); }
-#line 1706 "calc.tab.c"
+#line 270 "calc.y"
+                { (yyval.ival) = (yyvsp[0].ival); }
+#line 1723 "calc.tab.c"
     break;
 
   case 35:
-#line 260 "calc.y"
+#line 271 "calc.y"
+                  { (yyval.ival) = (int)(yyvsp[0].fval); }
+#line 1729 "calc.tab.c"
+    break;
+
+  case 36:
+#line 272 "calc.y"
          { 
         Variavel *v = pega_var((yyvsp[0].sval));
         if(v->tipo == 0) (yyval.ival) = v->valor.vi[0];
@@ -1717,11 +1740,11 @@ yyreduce:
         }
         free((yyvsp[0].sval));
       }
-#line 1721 "calc.tab.c"
+#line 1744 "calc.tab.c"
     break;
 
-  case 36:
-#line 270 "calc.y"
+  case 37:
+#line 282 "calc.y"
                            {
         Variavel *v = pega_var((yyvsp[-3].sval));
         int pos = (yyvsp[-1].ival);
@@ -1737,47 +1760,47 @@ yyreduce:
         }
         free((yyvsp[-3].sval));
       }
-#line 1741 "calc.tab.c"
-    break;
-
-  case 37:
-#line 285 "calc.y"
-                                         { (yyval.ival) = ((yyvsp[-2].ival) == (yyvsp[0].ival)); }
-#line 1747 "calc.tab.c"
+#line 1764 "calc.tab.c"
     break;
 
   case 38:
-#line 286 "calc.y"
-                                         { (yyval.ival) = ((yyvsp[-2].ival) != (yyvsp[0].ival)); }
-#line 1753 "calc.tab.c"
+#line 297 "calc.y"
+                                         { (yyval.ival) = ((yyvsp[-2].ival) == (yyvsp[0].ival)); }
+#line 1770 "calc.tab.c"
     break;
 
   case 39:
-#line 287 "calc.y"
-                                         { (yyval.ival) = ((yyvsp[-2].ival) > (yyvsp[0].ival)); }
-#line 1759 "calc.tab.c"
+#line 298 "calc.y"
+                                         { (yyval.ival) = ((yyvsp[-2].ival) != (yyvsp[0].ival)); }
+#line 1776 "calc.tab.c"
     break;
 
   case 40:
-#line 288 "calc.y"
-                                         { (yyval.ival) = ((yyvsp[-2].ival) < (yyvsp[0].ival)); }
-#line 1765 "calc.tab.c"
+#line 299 "calc.y"
+                                         { (yyval.ival) = ((yyvsp[-2].ival) > (yyvsp[0].ival)); }
+#line 1782 "calc.tab.c"
     break;
 
   case 41:
-#line 289 "calc.y"
-                                         { (yyval.ival) = ((yyvsp[-2].ival) >= (yyvsp[0].ival)); }
-#line 1771 "calc.tab.c"
+#line 300 "calc.y"
+                                         { (yyval.ival) = ((yyvsp[-2].ival) < (yyvsp[0].ival)); }
+#line 1788 "calc.tab.c"
     break;
 
   case 42:
-#line 290 "calc.y"
+#line 301 "calc.y"
+                                         { (yyval.ival) = ((yyvsp[-2].ival) >= (yyvsp[0].ival)); }
+#line 1794 "calc.tab.c"
+    break;
+
+  case 43:
+#line 302 "calc.y"
                                          { (yyval.ival) = ((yyvsp[-2].ival) <= (yyvsp[0].ival)); }
-#line 1777 "calc.tab.c"
+#line 1800 "calc.tab.c"
     break;
 
 
-#line 1781 "calc.tab.c"
+#line 1804 "calc.tab.c"
 
       default: break;
     }
@@ -2009,7 +2032,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 294 "calc.y"
+#line 306 "calc.y"
 
 
 void yyerror(const char *s) {

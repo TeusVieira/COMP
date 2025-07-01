@@ -236,10 +236,22 @@ item_impressao:
 condicional:
     KW_IF '(' expressao ')' bloco
   | KW_IF '(' expressao ')' bloco KW_ELSE bloco
+  | KW_IF '(' expressao ')' bloco KW_ELSE bloco {
+        if ($3) {
+            // Executa o primeiro bloco
+        } else {
+            // Executa o bloco do else
+        }
+    }
 ;
 
 repeticao:
-    KW_WHILE '(' expressao ')' bloco
+    KW_WHILE '(' expressao ')' bloco {
+        while ($3) {
+
+            fprintf(stderr, "Erro: estrutura de repetição while ainda não suporta execução do bloco repetidamente.\n");
+        }
+    }
 ;
 
 expressao:

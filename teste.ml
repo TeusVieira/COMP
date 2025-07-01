@@ -1,33 +1,10 @@
 INICIO
-    int a;
-    int b;
-    int resultado;
+    int i;
+    i = 0;
+    while (i < 3) {
+    devolva i;
+    i = i + 1;
+}
 
-    receba a;
-    receba b;
-
-    // Verifica se são iguais
-    resultado = a == b;
-    devolva "a == b: ", resultado;
-
-    // Verifica se são diferentes
-    resultado = a != b;
-    devolva "a != b: ", resultado;
-
-    // Verifica se a > b
-    resultado = a > b;
-    devolva "a > b: ", resultado;
-
-    // Verifica se a < b
-    resultado = a < b;
-    devolva "a < b: ", resultado;
-
-    // Verifica se a >= b
-    resultado = a >= b;
-    devolva "a >= b: ", resultado;
-
-    // Verifica se a <= b
-    resultado = a <= b;
-    devolva "a <= b: ", resultado;
 
 FIM
