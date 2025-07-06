@@ -1,7 +1,6 @@
-all: calc.l calc.y
+all: compilador.l compilador.y
 	@clear
-	bison -d calc.y
-	flex calc.l
-	gcc -o calc lex.yy.c calc.tab.c ast.c -lfl
-
+	flex compilador.l
+	bison -d -v compilador.y
+	gcc -o cuida lex.yy.c compilador.tab.c tab_simb.c ast.c eval.c main.c -lm
 
