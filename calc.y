@@ -1,16 +1,18 @@
 %debug
 %{
+#include "ast.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 
 void yyerror(const char *s);
 int yylex(void);
 
 typedef struct Variavel {
     char *nome;
-    int tipo; // 0=int, 1=float, 2=string
-    int tamanho; // 1 para variável simples, >1 para arrays
+    int tipo;
+    int tamanho;
     union {
         int *vi;
         float *vf;
@@ -22,67 +24,17 @@ typedef struct Variavel {
 Variavel tabela_vars[MAX_VARS];
 int num_vars = 0;
 
-int procura_var(char *nome) {
-    for (int i=0; i<num_vars; i++) {
-        if (strcmp(tabela_vars[i].nome, nome) == 0)
-            return i;
-    }
-    return -1;
-}
-
-void adiciona_var(char *nome, int tipo, int tamanho) {
-    if (procura_var(nome) != -1) {
-        fprintf(stderr, "Erro: variável '%s' já declarada.\n", nome);
-        exit(1);
-    }
-    if(num_vars == MAX_VARS) {
-        fprintf(stderr, "Erro: número máximo de variáveis atingido.\n");
-        exit(1);
-    }
-    Variavel *v = &tabela_vars[num_vars++];
-    v->nome = strdup(nome);
-    v->tipo = tipo;
-    v->tamanho = tamanho;
-    if (tipo == 0) { // int
-        v->valor.vi = malloc(sizeof(int) * tamanho);
-        for (int i=0; i<tamanho; i++) v->valor.vi[i] = 0;
-    } else if (tipo == 1) { // float
-        v->valor.vf = malloc(sizeof(float) * tamanho);
-        for (int i=0; i<tamanho; i++) v->valor.vf[i] = 0.0;
-    } else { // string
-        v->valor.vs = malloc(sizeof(char*) * tamanho);
-        for (int i=0; i<tamanho; i++) v->valor.vs[i] = NULL;
-    }
-}
-
-Variavel* pega_var(char *nome) {
-    int idx = procura_var(nome);
-    if (idx == -1) {
-        fprintf(stderr, "Erro: variável '%s' não declarada.\n", nome);
-        exit(1);
-    }
-    return &tabela_vars[idx];
-}
-
-void imprime_var(Variavel *v, int pos) {
-    if (pos < 0 || pos >= v->tamanho) {
-        fprintf(stderr, "Erro: índice %d fora do limite do array %s\n", pos, v->nome);
-        exit(1);
-    }
-    if (v->tipo == 0) printf("%d", v->valor.vi[pos]);
-    else if (v->tipo == 1) printf("%f", v->valor.vf[pos]);
-    else if (v->tipo == 2) {
-        if (v->valor.vs[pos]) printf("%s", v->valor.vs[pos]);
-        else printf("(null)");
-    }
-}
-
+int procura_var(char *nome);
+void adiciona_var(char *nome, int tipo, int tamanho);
+Variavel* pega_var(char *nome);
+void imprime_var(Variavel *v, int pos);
 %}
 
 %union {
     int ival;
     float fval;
     char *sval;
+    Ast *ast;
 }
 
 %token <ival> INT_CONST
@@ -95,25 +47,32 @@ void imprime_var(Variavel *v, int pos) {
 %token KW_IF KW_ELSE KW_WHILE
 
 %token OP_IGUAL OP_DIFERENTE OP_MAIORIGUAL OP_MENORIGUAL OP_MAIOR OP_MENOR OP_ATRIBUICAO
+%token OP_AND OP_OR
+%token ARI_MAIS ARI_MENOS ARI_VEZES ARI_DIVIDE
 
-%type <ival> expressao
-%type <sval> lista_de_impressao item_impressao
-
+%left OP_OR
+%left OP_AND
 %left OP_IGUAL OP_DIFERENTE
 %left OP_MAIOR OP_MENOR OP_MAIORIGUAL OP_MENORIGUAL
-%left '+' '-'
-%left '*' '/'
+%left ARI_MAIS ARI_MENOS
+%left ARI_VEZES ARI_DIVIDE
 
+%type <ast> programa bloco linha declaracao comando condicional repeticao expressao
+%type <sval> lista_de_impressao item_impressao
 
 %%
 
 programa:
-    INICIO bloco FIM { printf("Programa finalizado com sucesso.\n"); }
+    INICIO bloco FIM { printf("Programa finalizado.\n"); }
 ;
 
 bloco:
-    bloco linha
-  | linha
+    '{' lista_linhas '}' { $$ = ast_novo_bloco($2, NULL); }
+;
+
+lista_linhas:
+    lista_linhas linha { $$ = ast_append($1, $2); }
+  | linha { $$ = $1; }
 ;
 
 linha:
@@ -122,185 +81,62 @@ linha:
 ;
 
 declaracao:
-    KW_INT ID ';'          { adiciona_var($2, 0, 1); }
-  | KW_FLOAT ID ';'        { adiciona_var($2, 1, 1); }
-  | KW_STRING ID ';'       { adiciona_var($2, 2, 1); }
-  | KW_INT ID '[' INT_CONST ']' ';' { adiciona_var($2, 0, $4); }
-  | KW_FLOAT ID '[' INT_CONST ']' ';' { adiciona_var($2, 1, $4); }
-  | KW_STRING ID '[' INT_CONST ']' ';' { adiciona_var($2, 2, $4); }
+    KW_INT ID ';'          { adiciona_var($2, 0, 1); $$ = ast_declaracao($2, 0, 1); }
+  | KW_FLOAT ID ';'        { adiciona_var($2, 1, 1); $$ = ast_declaracao($2, 1, 1); }
+  | KW_STRING ID ';'       { adiciona_var($2, 2, 1); $$ = ast_declaracao($2, 2, 1); }
+  | KW_INT ID '[' INT_CONST ']' ';' { adiciona_var($2, 0, $4); $$ = ast_declaracao($2, 0, $4); }
+  | KW_FLOAT ID '[' INT_CONST ']' ';' { adiciona_var($2, 1, $4); $$ = ast_declaracao($2, 1, $4); }
+  | KW_STRING ID '[' INT_CONST ']' ';' { adiciona_var($2, 2, $4); $$ = ast_declaracao($2, 2, $4); }
 ;
 
 comando:
-    RECEBA ID ';' { 
-        Variavel *v = pega_var($2);
-        if (v->tipo == 0) {
-            printf("Digite valor inteiro para %s: ", v->nome);
-            scanf("%d", &v->valor.vi[0]);
-        } else if (v->tipo == 1) {
-            printf("Digite valor float para %s: ", v->nome);
-            scanf("%f", &v->valor.vf[0]);
-        } else {
-            printf("Digite valor string para %s: ", v->nome);
-            char buffer[100];
-            getchar();
-            fgets(buffer, sizeof(buffer), stdin);
-            buffer[strcspn(buffer, "\n")] = 0;
-            if(v->valor.vs[0]) free(v->valor.vs[0]);
-            v->valor.vs[0] = strdup(buffer);
-        }
-    }
-  | RECEBA ID '[' INT_CONST ']' ';' { 
-        Variavel *v = pega_var($2);
-        int pos = $4;
-        if(pos < 0 || pos >= v->tamanho) {
-            fprintf(stderr, "Erro: índice %d fora do limite do array %s\n", pos, v->nome);
-            exit(1);
-        }
-        if (v->tipo == 0) {
-            printf("Digite valor inteiro para %s[%d]: ", v->nome, pos);
-            scanf("%d", &v->valor.vi[pos]);
-        } else if (v->tipo == 1) {
-            printf("Digite valor float para %s[%d]: ", v->nome, pos);
-            scanf("%f", &v->valor.vf[pos]);
-        } else {
-            printf("Digite valor string para %s[%d]: ", v->nome, pos);
-            char buffer[100];
-            getchar();
-            fgets(buffer, sizeof(buffer), stdin);
-            buffer[strcspn(buffer, "\n")] = 0;
-            if(v->valor.vs[pos]) free(v->valor.vs[pos]);
-            v->valor.vs[pos] = strdup(buffer);
-        }
-    }
-  | DEVOLVA lista_de_impressao ';' { printf("\n"); }
-  | ID OP_ATRIBUICAO expressao ';' {
-        Variavel *v = pega_var($1);
-        if(v->tipo == 0) v->valor.vi[0] = $3;
-        else if(v->tipo == 1) v->valor.vf[0] = (float)$3;
-        else {
-            fprintf(stderr, "Erro: atribuição direta não suportada para string sem uso de RECEBA.\n");
-            exit(1);
-        }
-    }
-  | ID '[' INT_CONST ']' OP_ATRIBUICAO expressao ';' {
-        Variavel *v = pega_var($1);
-        int pos = $3;
-        if(pos < 0 || pos >= v->tamanho) {
-            fprintf(stderr, "Erro: índice %d fora do limite do array %s\n", pos, v->nome);
-            exit(1);
-        }
-        if(v->tipo == 0) v->valor.vi[pos] = $6;
-        else if(v->tipo == 1) v->valor.vf[pos] = (float)$6;
-        else {
-            fprintf(stderr, "Erro: atribuição direta não suportada para string sem uso de RECEBA.\n");
-            exit(1);
-        }
-    }
-  | condicional
-  | repeticao
+    RECEBA ID ';' { $$ = ast_receba($2, NULL); }
+  | RECEBA ID '[' INT_CONST ']' ';' { $$ = ast_receba($2, ast_const_int($4)); }
+  | DEVOLVA lista_de_impressao ';' { $$ = ast_devolva($2); }
+  | ID OP_ATRIBUICAO expressao ';' { $$ = ast_atribuicao($1, NULL, $3); }
+  | ID '[' INT_CONST ']' OP_ATRIBUICAO expressao ';' { $$ = ast_atribuicao($1, ast_const_int($3), $6); }
+  | condicional { $$ = $1; }
+  | repeticao { $$ = $1; }
 ;
 
 lista_de_impressao:
-      item_impressao
-    | lista_de_impressao ',' item_impressao { printf(" "); }
+      item_impressao { $$ = ast_impressao($1); }
+    | lista_de_impressao ',' item_impressao { $$ = ast_lista_impressao($1, $3); }
 ;
 
 item_impressao:
-      STRING { printf("%s", $1); free($1); }
-    | ID {
-        Variavel *v = pega_var($1);
-        imprime_var(v, 0);
-        free($1);
-      }
-    | ID '[' expressao ']' {
-    Variavel *v = pega_var($1);
-    int pos = $3;
-    if(pos < 0 || pos >= v->tamanho) {
-        fprintf(stderr, "Erro: índice %d fora do limite do array %s\n", pos, v->nome);
-        exit(1);
-    }
-    if(v->tipo == 0) {
-        printf("%d", v->valor.vi[pos]);
-    } else if(v->tipo == 1) {
-        printf("%f", v->valor.vf[pos]);
-    } else if(v->tipo == 2) {
-        if(v->valor.vs[pos])
-            printf("%s", v->valor.vs[pos]);
-        else
-            printf("(null)");
-    }
-    free($1);
-}
+      STRING { $$ = ast_string($1); free($1); }
+    | ID { $$ = ast_var($1, NULL); free($1); }
+    | ID '[' expressao ']' { $$ = ast_var($1, $3); free($1); }
 ;
 
 condicional:
-    KW_IF '(' expressao ')' bloco
-  | KW_IF '(' expressao ')' bloco KW_ELSE bloco
-  | KW_IF '(' expressao ')' bloco KW_ELSE bloco {
-        if ($3) {
-            // Executa o primeiro bloco
-        } else {
-            // Executa o bloco do else
-        }
-    }
+    KW_IF '(' expressao ')' bloco { $$ = ast_if($3, $5, NULL); }
+  | KW_IF '(' expressao ')' bloco KW_ELSE bloco { $$ = ast_if($3, $5, $7); }
 ;
 
 repeticao:
-    KW_WHILE '(' expressao ')' bloco {
-        while ($3) {
-
-            fprintf(stderr, "Erro: estrutura de repetição while ainda não suporta execução do bloco repetidamente.\n");
-        }
-    }
+    KW_WHILE '(' expressao ')' bloco { $$ = ast_while($3, $5); }
 ;
 
 expressao:
-      expressao '+' expressao { $$ = $1 + $3; }
-    | expressao '-' expressao { $$ = $1 - $3; }
-    | expressao '*' expressao { $$ = $1 * $3; }
-    | expressao '/' expressao { 
-        if ($3 == 0) {
-            yyerror("Divisão por zero");
-            $$ = 0;
-        } else {
-            $$ = $1 / $3;
-        }
-      }
+      expressao OP_OR expressao   { $$ = ast_binop(OP_OR, $1, $3); }
+    | expressao OP_AND expressao   { $$ = ast_binop(OP_AND, $1, $3); }
+    | expressao OP_IGUAL expressao       { $$ = ast_binop("==", $1, $3); }
+    | expressao OP_DIFERENTE expressao   { $$ = ast_binop("!=", $1, $3); }
+    | expressao OP_MAIOR expressao       { $$ = ast_binop(">", $1, $3); }
+    | expressao OP_MENOR expressao       { $$ = ast_binop("<", $1, $3); }
+    | expressao OP_MAIORIGUAL expressao  { $$ = ast_binop(">=", $1, $3); }
+    | expressao OP_MENORIGUAL expressao  { $$ = ast_binop("<=", $1, $3); }
+    | expressao ARI_MAIS expressao { $$ = ast_binop(ARI_MAIS, $1, $3); }
+    | expressao ARI_MENOS expressao { $$ = ast_binop(ARI_MENOS, $1, $3); }
+    | expressao ARI_VEZES expressao { $$ = ast_binop(ARI_VEZES, $1, $3); }
+    | expressao ARI_DIVIDE expressao { $$ = ast_binop(ARI_DIVIDE, $1, $3); }
     | '(' expressao ')' { $$ = $2; }
-    | INT_CONST { $$ = $1; }
-    | FLOAT_CONST { $$ = (int)$1; } // simplificação
-    | ID { 
-        Variavel *v = pega_var($1);
-        if(v->tipo == 0) $$ = v->valor.vi[0];
-        else if(v->tipo == 1) $$ = (int)v->valor.vf[0];
-        else {
-            fprintf(stderr, "Erro: variável string não pode ser usada em expressão numérica\n");
-            exit(1);
-        }
-        free($1);
-      }
-    | ID '[' expressao ']' {
-        Variavel *v = pega_var($1);
-        int pos = $3;
-        if(pos < 0 || pos >= v->tamanho) {
-            fprintf(stderr, "Erro: índice %d fora do limite do array %s\n", pos, v->nome);
-            exit(1);
-        }
-        if(v->tipo == 0) $$ = v->valor.vi[pos];
-        else if(v->tipo == 1) $$ = (int)v->valor.vf[pos];
-        else {
-            fprintf(stderr, "Erro: variável string não pode ser usada em expressão numérica\n");
-            exit(1);
-        }
-        free($1);
-      }
-    | expressao OP_IGUAL expressao       { $$ = ($1 == $3); }
-    | expressao OP_DIFERENTE expressao   { $$ = ($1 != $3); }
-    | expressao OP_MAIOR expressao       { $$ = ($1 > $3); }
-    | expressao OP_MENOR expressao       { $$ = ($1 < $3); }
-    | expressao OP_MAIORIGUAL expressao  { $$ = ($1 >= $3); }
-    | expressao OP_MENORIGUAL expressao  { $$ = ($1 <= $3); }
-
+    | INT_CONST { $$ = ast_const_int($1); }
+    | FLOAT_CONST { $$ = ast_const_float($1); }
+    | ID { $$ = ast_var($1, NULL); free($1); }
+    | ID '[' expressao ']' { $$ = ast_var($1, $3); free($1); }
 ;
 
 %%
@@ -322,6 +158,7 @@ int main(int argc, char **argv) {
     extern FILE *yyin;
     yyin = f;
     printf("Iniciando compilador...\n");
+    yydebug = 1;
     yyparse();
     fclose(f);
     return 0;

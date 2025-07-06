@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -31,59 +31,66 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_CALC_TAB_H_INCLUDED
 # define YY_YY_CALC_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+# define YYDEBUG 0
 #endif
 #if YYDEBUG
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INT_CONST = 258,
-    FLOAT_CONST = 259,
-    ID = 260,
-    STRING = 261,
-    INICIO = 262,
-    FIM = 263,
-    KW_INT = 264,
-    KW_FLOAT = 265,
-    KW_STRING = 266,
-    RECEBA = 267,
-    DEVOLVA = 268,
-    KW_IF = 269,
-    KW_ELSE = 270,
-    KW_WHILE = 271,
-    OP_IGUAL = 272,
-    OP_DIFERENTE = 273,
-    OP_MAIORIGUAL = 274,
-    OP_MENORIGUAL = 275,
-    OP_MAIOR = 276,
-    OP_MENOR = 277,
-    OP_ATRIBUICAO = 278
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    INT_CONST = 258,               /* INT_CONST  */
+    FLOAT_CONST = 259,             /* FLOAT_CONST  */
+    ID = 260,                      /* ID  */
+    STRING = 261,                  /* STRING  */
+    INICIO = 262,                  /* INICIO  */
+    FIM = 263,                     /* FIM  */
+    KW_INT = 264,                  /* KW_INT  */
+    KW_FLOAT = 265,                /* KW_FLOAT  */
+    KW_STRING = 266,               /* KW_STRING  */
+    RECEBA = 267,                  /* RECEBA  */
+    DEVOLVA = 268,                 /* DEVOLVA  */
+    KW_IF = 269,                   /* KW_IF  */
+    KW_ELSE = 270,                 /* KW_ELSE  */
+    KW_WHILE = 271,                /* KW_WHILE  */
+    OP_IGUAL = 272,                /* OP_IGUAL  */
+    OP_DIFERENTE = 273,            /* OP_DIFERENTE  */
+    OP_MAIORIGUAL = 274,           /* OP_MAIORIGUAL  */
+    OP_MENORIGUAL = 275,           /* OP_MENORIGUAL  */
+    OP_MAIOR = 276,                /* OP_MAIOR  */
+    OP_MENOR = 277,                /* OP_MENOR  */
+    OP_ATRIBUICAO = 278            /* OP_ATRIBUICAO  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 82 "calc.y"
+#line 14 "calc.y"
 
     int ival;
     float fval;
     char *sval;
+    Ast *ast;
 
-#line 87 "calc.tab.h"
+#line 94 "calc.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -94,6 +101,8 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
+
 int yyparse (void);
+
 
 #endif /* !YY_YY_CALC_TAB_H_INCLUDED  */
