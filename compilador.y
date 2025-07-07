@@ -66,8 +66,8 @@ extern Ast *root;
 %nonassoc EQ NE
 %nonassoc GT GE LT LE
 %left ADD SUB
-%left MUL DIV
-%right UMINUS // Usei UMINUS em vez de UNARY_MINUS para corresponder ao ast.h
+%left MUL DIV 
+%right UMINUS 
 
 %%
 
@@ -86,8 +86,9 @@ statements_block: /* vazio */    { $$ = newast(NODE_EMPTY, NULL, NULL); }
 // statement_list: Uma lista de statement_items.
 // Vamos construir a lista de forma que o primeiro item da lista seja o nó mais à esquerda.
 // A iteração em 'eval' será `eval(node->l); eval(node->r);`
-statement_list: statement_item                         { $$ = $1; }
-              | statement_list SEMICOLON statement_item { $$ = newlist($1, $3); } // Recursão à esquerda
+statement_list:  statement_list SEMICOLON statement_item { $$ = newlist($1, $3); } // Recursão à esquerda
+                |statement_item                         { $$ = $1; }
+             
               ;
 
 // statement_item: agrupa todos os possíveis declarações/comandos
@@ -124,6 +125,7 @@ write_stmt: WRITE_KW write_args                      { $$ = $2; } // write_args 
 
 // write_item para item individual
 write_item: expression                               { $$ = $1; } // Expressões numéricas
+          | logical_expression                       { $$ = $1;}
           ;
 
 // write_args para lista de write_item. Cria uma NODE_LIST de NODE_WRITE.

@@ -44,11 +44,11 @@ extern int yylineno;
 "string"    { return STRING_KW; }
 "array"     { return ARRAY_KW; }
 "se"        { return IF_KW; }
-"então"     { return THEN_KW; }
-"senão"     { return ELSE_KW; }
+"entao"     { return THEN_KW; }
+"senao"     { return ELSE_KW; }
 "fimse"     { return ENDIF_KW; }
 "enquanto"  { return WHILE_KW; }
-"faça"      { return DO_KW; }
+"faca"      { return DO_KW; }
 "fimenquanto" { return ENDWHILE_KW; }
 "para"      { return FOR_KW; }
 "fimpara"   { return ENDFOR_KW; }
