@@ -56,20 +56,17 @@ Para compilar e executar programas escritos em CUIDA, você precisará do compil
 
 ### Passos para Compilar
 
-1.  **Limpe arquivos gerados anteriormente (se existirem):**
-    ```bash
-    rm -f lex.yy.c compilador.tab.c compilador.tab.h compilador.output cuida
-    ```
-2.  **Gere o analisador léxico com `flex`:**
+
+1.  **Gere o analisador léxico com `flex`:**
     ```bash
     flex compilador.l
     ```
-3.  **Gere o analisador sintático com `bison`:**
+2.  **Gere o analisador sintático com `bison`:**
     ```bash
     bison -d compilador.y
     ```
     *(Certifique-se de que `compilador.y` e `compilador.l` estão no mesmo diretório.)*
-4.  **Compile o compilador CUIDA:**
+3.  **Compile o compilador CUIDA:**
     ```bash
     gcc -o cuida lex.yy.c compilador.tab.c ast.c eval.c main.c -lfl -lm
     ```
@@ -77,7 +74,7 @@ Para compilar e executar programas escritos em CUIDA, você precisará do compil
 
 ### Como Executar um Programa CUIDA
 
-Com o executável `cuida` compilado, você pode rodar seus arquivos `.cui` (ou `.ml`, como nos exemplos anteriores) assim:
+Com o executável `cuida` compilado, você pode rodar seus arquivos `.cui`  assim:
 
 ```bash
 ./cuida seu_programa.cui
