@@ -13,7 +13,7 @@ CUIDA é uma linguagem de programação didática e direta, projetada para ser s
   * **Tipos de Dados Básicos:** Suporte para **inteiros (`int`)**, **números reais (`real`)** e **texto (`string`)**.
   * **Declaração e Atribuição:** Sintaxe simples para declarar variáveis e atribuir valores a elas.
   * **Operações Aritméticas:** Realize cálculos básicos como adição, subtração, multiplicação e divisão.
-  * **Operações Lógicas:** Suporte a comparações (`==`, `!=`, `<`, `>`, `<=`, `>=`) e operadores lógicos (`E` para AND, `OU` para OR) para criar condições complexas.
+  * **Operações Lógicas:** Suporte a comparações (`==`, `!=`, `<`, `>`, `<=`, `>=`) e operadores lógicos (`&&` para AND, `||` para OR) para criar condições complexas.
   * **Entrada e Saída de Dados:** Use `ler` para obter entrada do usuário e `escrever` para exibir informações no console.
   * **Estruturas Condicionais:** Implemente tomadas de decisão com a estrutura `se...entao...senao...fimse`, permitindo que seu programa execute diferentes blocos de código com base em condições.
 
