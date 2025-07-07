@@ -1,4 +1,4 @@
-Entendido\! Vou criar um README para a sua linguagem de programação "CUIDA".
+
 
 -----
 
